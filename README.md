@@ -2,6 +2,13 @@
 
 <p align="center">Minimal terminal-based typing speed test with multiple programming language support</p>
 
+<br>
+<div align="center">
+<img src="assets/example.gif" />
+</div>
+
+---
+
 ## Features
 
 - **Terminal-based typing** with WPM and accuracy tracking
@@ -21,6 +28,8 @@
 | Go |Rust | Bash |
 | HTML | CSS | SQL |
 
+---
+
 ## Installation
 
 ### Via `go install`
@@ -38,6 +47,8 @@ go build
 sudo mv typtea /usr/local/bin/
 typtea -h
 ```
+
+---
 
 ## Usage
 
@@ -71,6 +82,8 @@ typtea start --help
 - **Enter** to restart after completion
 - **Esc** to quit the application
 
+---
+
 ## Development
 
 ### Prerequisites
@@ -87,27 +100,6 @@ go build
 ./typtea start
 ```
 
-### Project Structure
-
-```text
-typtea/
-├── cmd/                   # CLI commands
-│   ├── root.go             # Root command
-│   └── start.go            # Start command
-├── internal/
-│   ├── game/              # Game logic
-│   │   ├── data/           # Language JSON files
-│   │   ├── languages.go    # Language management
-│   │   ├── typing.go       # Typing game logic
-│   │   └── words.go        # Word generation
-│   └── tui/               # Terminal UI
-│       ├── model.go        # Bubble Tea model
-│       ├── styles.go       # Lipgloss styles
-│       ├── update.go       # Update logic
-│       └── view.go         # View rendering
-└── main.go                # Entry point
-```
-
 ### Adding New Languages
 
 1. Create a `JSON` file in `internal/game/data/` with the format:
@@ -120,6 +112,8 @@ typtea/
 ```
 
 2. Rebuild the application to embed the new language data
+
+---
 
 ## Contributing
 

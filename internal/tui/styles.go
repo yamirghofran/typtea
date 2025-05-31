@@ -9,14 +9,14 @@ var (
 	timeStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("12")).
 			Bold(true).
-			MarginLeft(6)
+			MarginLeft(8)
 
 	textBoxStyle = lipgloss.NewStyle().
 			Padding(1, 3).
 			Width(60).
 			Height(6).
 			Align(lipgloss.Left).
-			MarginLeft(3)
+			MarginLeft(5)
 
 	typedCharStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("15")).
@@ -46,7 +46,7 @@ var (
 
 	resultsContainerStyle = lipgloss.NewStyle().
 				Padding(3, 5).
-				Align(lipgloss.Center)
+				Align(lipgloss.Left)
 
 	restartInstructionStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.Color("8")).

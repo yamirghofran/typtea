@@ -4,7 +4,7 @@
 
 <br>
 <div align="center">
-<img src="assets/example.gif" />
+<img src="assets/typtea.gif" />
 </div>
 
 ---
@@ -14,8 +14,8 @@
 - **Terminal-based typing** with WPM and accuracy tracking
 - **Multi-language support** including English and 14+ programming languages
 - **Infinite word generation** with smooth 3-line scrolling display
-- **Minimalist TUI** built with Bubble Tea and Lipgloss for responsive design
-- **Embedded language data** for easy distribution and offline use
+- **Minimalist TUI** built with Bubble Tea and Lipgloss
+- **Embedded language data** for easy distribution
 - **Accurate metrics** following standard typing test calculations
 
 ### Supported Languages
@@ -27,6 +27,7 @@
 | C | C++ | C# |
 | Go |Rust | Bash |
 | HTML | CSS | SQL |
+| | | |
 
 ---
 
@@ -128,3 +129,9 @@ Contributions are always welcome! If you have ideas, bug reports, or want to sub
 ## License
 
 [MIT License](LICENSE)
+
+<br><br>
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/footers/gray0_ctp_on_line.svg?sanitize=true" />
+</p>

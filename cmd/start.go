@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"typtea/internal/game"
-	"typtea/internal/tui"
+	"github.com/ashish0kumar/typtea/internal/game"
+	"github.com/ashish0kumar/typtea/internal/tui"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"

@@ -7,30 +7,32 @@ import (
 
 // TypingStats holds the statistics for a game session
 type TypingStats struct {
-	WPM             float64
-	Accuracy        float64
-	CharactersTyped int
-	CorrectChars    int
-	TotalChars      int
-	TimeElapsed     time.Duration
-	IsComplete      bool
+	WPM               float64
+	Accuracy          float64
+	CharactersTyped   int
+	CorrectChars      int
+	TotalChars        int
+	TimeElapsed       time.Duration
+	IsComplete        bool
+	UncorrectedErrors int
 }
 
 // TypingGame represents the state of a game session
 type TypingGame struct {
-	AllWords     []string
-	DisplayLines []string
-	UserInput    string
-	CurrentPos   int
-	GlobalPos    int
-	StartTime    time.Time
-	Duration     int
-	IsStarted    bool
-	IsFinished   bool
-	Errors       map[int]bool
-	LinesPerView int
-	CharsPerLine int
-	WordsTyped   int
+	AllWords        []string
+	DisplayLines    []string
+	UserInput       string
+	CurrentPos      int
+	GlobalPos       int
+	StartTime       time.Time
+	Duration        int
+	IsStarted       bool
+	IsFinished      bool
+	Errors          map[int]bool
+	TotalErrorsMade int
+	LinesPerView    int
+	CharsPerLine    int
+	WordsTyped      int
 }
 
 // NewTypingGame initializes a new TypingGame instance with a specified duration
@@ -124,6 +126,7 @@ func (g *TypingGame) AddCharacter(char rune) {
 	if g.CurrentPos < len(displayText) && g.CurrentPos >= 0 {
 		if rune(displayText[g.CurrentPos]) != char {
 			g.Errors[g.GlobalPos] = true
+			g.TotalErrorsMade++
 		}
 		g.CurrentPos++
 		g.GlobalPos++
@@ -157,6 +160,7 @@ func (g *TypingGame) RemoveCharacter() {
 		g.UserInput = g.UserInput[:len(g.UserInput)-1]
 		g.CurrentPos--
 		g.GlobalPos--
+
 		delete(g.Errors, g.GlobalPos)
 	}
 }
@@ -166,7 +170,7 @@ func (g *TypingGame) GetDisplayText() string {
 	return strings.Join(g.DisplayLines, " ")
 }
 
-// GetStats calculates and returns the current typing statistics
+// GetStats calculates and returns the typing statistics for the current game session
 func (g *TypingGame) GetStats() TypingStats {
 	if !g.IsStarted {
 		return TypingStats{}
@@ -175,27 +179,48 @@ func (g *TypingGame) GetStats() TypingStats {
 	elapsed := time.Since(g.StartTime)
 	minutes := elapsed.Minutes()
 
-	// Calculate accuracy
-	correctChars := g.GlobalPos - len(g.Errors)
+	// Calculate Gross WPM (all typed entries / 5 / time in minutes)
+	grossWPM := 0.0
+	if minutes > 0 {
+		grossWPM = float64(g.GlobalPos) / 5 / minutes
+	}
+
+	// Calculate uncorrected errors (errors still present in the text)
+	uncorrectedErrors := len(g.Errors)
+
+	// Calculate Net WPM (Gross WPM - uncorrected errors per minute)
+	netWPM := grossWPM
+	if minutes > 0 {
+		errorRate := float64(uncorrectedErrors) / minutes
+		netWPM = grossWPM - errorRate
+	}
+
+	// Ensure Net WPM doesn't go below 0
+	if netWPM < 0 {
+		netWPM = 0
+	}
+
+	// Calculate accuracy (correct characters / total characters typed * 100)
+	correctChars := g.GlobalPos - g.TotalErrorsMade // You need to add this field
 	accuracy := 0.0
 	if g.GlobalPos > 0 {
 		accuracy = float64(correctChars) / float64(g.GlobalPos) * 100
 	}
 
-	// Calculate WPM
-	wpm := 0.0
-	if minutes > 0 {
-		wpm = float64(correctChars) / 5 / minutes
+	// Ensure accuracy doesn't go below 0
+	if accuracy < 0 {
+		accuracy = 0
 	}
 
 	return TypingStats{
-		WPM:             wpm,
-		Accuracy:        accuracy,
-		CharactersTyped: g.GlobalPos,
-		CorrectChars:    correctChars,
-		TotalChars:      len(g.GetDisplayText()),
-		TimeElapsed:     elapsed,
-		IsComplete:      g.IsFinished,
+		WPM:               netWPM,
+		Accuracy:          accuracy,
+		CharactersTyped:   g.GlobalPos,
+		CorrectChars:      correctChars,
+		TotalChars:        len(g.GetDisplayText()),
+		TimeElapsed:       elapsed,
+		IsComplete:        g.IsFinished,
+		UncorrectedErrors: uncorrectedErrors,
 	}
 }
 

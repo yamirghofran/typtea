@@ -42,6 +42,12 @@
 
 ## Installation
 
+### Arch Linux (AUR)
+
+```bash
+yay -S typtea
+```
+
 ### Via `go install`
 
 ```bash
@@ -51,8 +57,8 @@ go install github.com/ashish0kumar/typtea@latest
 ### Build from Source
 
 ```bash
-git clone https://github.com/ashish0kumar/typtea.git
-cd typtea
+git clone --depth=1 https://github.com/ashish0kumar/typtea
+cd typtea/
 go build
 sudo mv typtea /usr/local/bin/
 typtea -h
@@ -64,7 +70,7 @@ typtea -h
 
 ### Basic Commands
 
-```bash
+```yaml
 # Start a 30-second English typing test (default)
 typtea start
 

@@ -77,7 +77,7 @@ func (m Model) formatIntoLines(plainContent string) []string {
 
 		if charIndex >= len(plainContent) {
 			// If we run out of content, just render untyped
-			styledLines = append(styledLines, untypedCharStyle.Render(line))
+			styledLines = append(styledLines, mutedStyle.Render(line))
 			continue
 		}
 
@@ -90,7 +90,7 @@ func (m Model) formatIntoLines(plainContent string) []string {
 				styledLine.WriteString(styledChar)
 				charIndex++
 			} else {
-				styledLine.WriteString(untypedCharStyle.Render(string(char)))
+				styledLine.WriteString(mutedStyle.Render(string(char)))
 			}
 		}
 
@@ -114,16 +114,16 @@ func (m Model) styleChar(char rune, index int) string {
 		// Already typed
 		if m.game.Errors != nil {
 			if _, hasErr := m.game.Errors[errorIndex]; hasErr {
-				return incorrectCharStyle.Render(string(char))
+				return errorStyle.Render(string(char))
 			}
 		}
-		return typedCharStyle.Render(string(char))
+		return boldStyle.Render(string(char))
 	case index == userPos:
 		// Current character
-		return currentCharStyle.Render(string(char))
+		return cursorStyle.Render(string(char))
 	default:
 		// Not yet typed
-		return untypedCharStyle.Render(string(char))
+		return mutedStyle.Render(string(char))
 	}
 }
 
@@ -132,27 +132,27 @@ func (m Model) renderResults() string {
 	stats := m.finalStats
 
 	accSection := lipgloss.JoinVertical(
-		lipgloss.Center,
-		statLabelStyle.Render("acc"),
-		statValueStyle.Render(fmt.Sprintf("%.0f%%", stats.Accuracy)),
+		lipgloss.Right,
+		mutedStyle.Render("acc"),
+		boldStyle.Render(fmt.Sprintf("%.0f%%", stats.Accuracy)),
 	)
 
 	wpmSection := lipgloss.JoinVertical(
-		lipgloss.Center,
-		statLabelStyle.Render("wpm"),
-		statValueStyle.Render(fmt.Sprintf("%.0f", stats.WPM)),
+		lipgloss.Right,
+		mutedStyle.Render("wpm"),
+		boldStyle.Render(fmt.Sprintf("%.0f", stats.WPM)),
 	)
 
 	timeSection := lipgloss.JoinVertical(
-		lipgloss.Center,
-		statLabelStyle.Render("time"),
-		statValueStyle.Render(fmt.Sprintf("%.0fs", stats.TimeElapsed.Seconds())),
+		lipgloss.Right,
+		mutedStyle.Render("time"),
+		boldStyle.Render(fmt.Sprintf("%.0fs", stats.TimeElapsed.Seconds())),
 	)
 
 	languageSection := lipgloss.JoinVertical(
-		lipgloss.Center,
-		statLabelStyle.Render("lang"),
-		statValueStyle.Render(m.language),
+		lipgloss.Right,
+		mutedStyle.Render("lang"),
+		boldStyle.Render(m.language),
 	)
 
 	// Arrange stats horizontally
@@ -167,7 +167,7 @@ func (m Model) renderResults() string {
 		languageSection,
 	)
 
-	instructions := restartInstructionStyle.Render("Press Enter to restart • Esc to quit")
+	instructions := mutedStyle.Align(lipgloss.Center).Render("Press Enter to restart • Esc to quit")
 
 	// Results layout
 	resultsContent := lipgloss.JoinVertical(

@@ -18,37 +18,23 @@ var (
 			Align(lipgloss.Left).
 			MarginLeft(5)
 
-	typedCharStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("15")).
+	boldStyle = lipgloss.NewStyle().
 			Bold(true)
 
-	incorrectCharStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("9")).
-				Bold(true).
-				Underline(true)
+	mutedStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("8"))
 
-	currentCharStyle = lipgloss.NewStyle().
-				Background(lipgloss.Color("15")).
-				Foreground(lipgloss.Color("0")).
-				Bold(true)
-
-	untypedCharStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("8"))
-
-	statLabelStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("8")).
-			Align(lipgloss.Center)
-
-	statValueStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("15")).
+	errorStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("9")).
 			Bold(true).
-			Align(lipgloss.Center)
+			Underline(true)
+
+	cursorStyle = lipgloss.NewStyle().
+			Background(lipgloss.Color("15")).
+			Foreground(lipgloss.Color("#000")).
+			Bold(true)
 
 	resultsContainerStyle = lipgloss.NewStyle().
 				Padding(3, 5).
 				Align(lipgloss.Left)
-
-	restartInstructionStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.Color("8")).
-				Align(lipgloss.Center)
 )

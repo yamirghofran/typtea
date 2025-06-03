@@ -7,6 +7,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+const statGap = 5
+const spacer = ""
+
 // View renders the current state of the Model as a string for display
 func (m Model) View() string {
 	if m.showResults {
@@ -39,29 +42,12 @@ func (m Model) renderTimer() string {
 // renderText formats the text display with appropriate styles for typed, current, untyped characters
 func (m Model) renderText() string {
 	displayText := m.game.GetDisplayText()
-	userPos := m.game.CurrentPos
 
 	var rendered strings.Builder
 
 	for i, char := range displayText {
-		var styledChar string
-
-		switch {
-		case i < userPos:
-			// Already typed
-			if m.game.Errors[m.game.GlobalPos-(userPos-i)] {
-				styledChar = incorrectCharStyle.Render(string(char))
-			} else {
-				styledChar = typedCharStyle.Render(string(char))
-			}
-		case i == userPos:
-			// Current character
-			styledChar = currentCharStyle.Render(string(char))
-		default:
-			// Not yet typed
-			styledChar = untypedCharStyle.Render(string(char))
-		}
-
+		// Use helper to style character
+		styledChar := m.styleChar(char, i)
 		rendered.WriteString(styledChar)
 	}
 
@@ -90,6 +76,7 @@ func (m Model) formatIntoLines(plainContent string) []string {
 		}
 
 		if charIndex >= len(plainContent) {
+			// If we run out of content, just render untyped
 			styledLines = append(styledLines, untypedCharStyle.Render(line))
 			continue
 		}
@@ -98,22 +85,8 @@ func (m Model) formatIntoLines(plainContent string) []string {
 
 		for _, char := range line {
 			if charIndex < len(plainContent) {
-				var styledChar string
-				userPos := m.game.CurrentPos
-
-				switch {
-				case charIndex < userPos:
-					if m.game.Errors[m.game.GlobalPos-(userPos-charIndex)] {
-						styledChar = incorrectCharStyle.Render(string(char))
-					} else {
-						styledChar = typedCharStyle.Render(string(char))
-					}
-				case charIndex == userPos:
-					styledChar = currentCharStyle.Render(string(char))
-				default:
-					styledChar = untypedCharStyle.Render(string(char))
-				}
-
+				// Style character using helper
+				styledChar := m.styleChar(char, charIndex)
 				styledLine.WriteString(styledChar)
 				charIndex++
 			} else {
@@ -129,6 +102,29 @@ func (m Model) formatIntoLines(plainContent string) []string {
 	}
 
 	return styledLines
+}
+
+// styleChar determines the style of a character based on its position and error status
+func (m Model) styleChar(char rune, index int) string {
+	userPos := m.game.CurrentPos
+	errorIndex := m.game.GlobalPos - (userPos - index)
+
+	switch {
+	case index < userPos:
+		// Already typed
+		if m.game.Errors != nil {
+			if _, hasErr := m.game.Errors[errorIndex]; hasErr {
+				return incorrectCharStyle.Render(string(char))
+			}
+		}
+		return typedCharStyle.Render(string(char))
+	case index == userPos:
+		// Current character
+		return currentCharStyle.Render(string(char))
+	default:
+		// Not yet typed
+		return untypedCharStyle.Render(string(char))
+	}
 }
 
 // renderResults formats the final results of the typing test for display
@@ -163,11 +159,11 @@ func (m Model) renderResults() string {
 	statsRow := lipgloss.JoinHorizontal(
 		lipgloss.Top,
 		accSection,
-		strings.Repeat(" ", 5),
+		strings.Repeat(" ", statGap),
 		wpmSection,
-		strings.Repeat(" ", 5),
+		strings.Repeat(" ", statGap),
 		timeSection,
-		strings.Repeat(" ", 5),
+		strings.Repeat(" ", statGap),
 		languageSection,
 	)
 
@@ -176,9 +172,9 @@ func (m Model) renderResults() string {
 	// Results layout
 	resultsContent := lipgloss.JoinVertical(
 		lipgloss.Center,
-		"",
+		spacer,
 		statsRow,
-		"",
+		spacer,
 		instructions,
 	)
 

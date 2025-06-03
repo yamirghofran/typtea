@@ -16,6 +16,7 @@ import (
 var (
 	duration int    // Duration of the typing test in seconds
 	language string // Language for the typing test, default is "en"
+	listLangs bool  // Flag to list all available languages
 )
 
 // startCmd represents the start command for the typing test
@@ -30,8 +31,6 @@ var startCmd = &cobra.Command{
 	RunE: runTypingTest,
 }
 
-var listLangs bool
-
 // init function initializes the start command and its flags
 func init() {
 	startCmd.Flags().IntVarP(&duration, "duration", "d", 30, "Test duration in seconds")
@@ -42,11 +41,7 @@ func init() {
 // runTypingTest is the main function that runs the typing test
 func runTypingTest(cmd *cobra.Command, args []string) error {
 
-	// Validate duration
-	if duration < 10 || duration > 300 {
-		return fmt.Errorf("duration must be between 10 and 300 seconds")
-	}
-
+	// Initialize the language manager
 	langManager := game.NewLanguageManager()
 
 	// If --list-langs is set, print available languages and exit
@@ -58,20 +53,27 @@ func runTypingTest(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
+	// Validate duration
+	if duration < 10 || duration > 300 {
+		return fmt.Errorf("duration must be between 10 and 300 seconds (e.g., --duration 60)")
+	}
+
 	// Validate language
 	if !langManager.IsLanguageAvailable(language) {
 		available := langManager.GetAvailableLanguages()
-		fmt.Printf("Error: Language '%s' not available.\n", language)
-		fmt.Printf("Available languages: %s\n", strings.Join(available, ", "))
+		fmt.Fprintf(os.Stderr, "Error: Language '%s' not available.\n", language)
+		fmt.Fprintf(os.Stderr, "Available languages: %s\n", strings.Join(available, ", "))
 		return fmt.Errorf("invalid language: %s", language)
 	}
 
+	// Create a new typing test model
 	model, err := tui.NewModel(duration, language)
 	if err != nil {
-		fmt.Printf("Error creating typing test: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error creating typing test: %v\n", err)
 		os.Exit(1)
 	}
 
+	// Start the TUI program
 	p := tea.NewProgram(model, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		log.Fatal(err)

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	version     = "v0.1.0" // Update as needed
+	version     = "dev" // fallback to dev
 	showVersion bool
 )
 

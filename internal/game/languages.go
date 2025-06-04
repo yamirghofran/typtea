@@ -29,15 +29,17 @@ func NewLanguageManager() *LanguageManager {
 	lm := &LanguageManager{
 		loadedLanguages: make(map[string][]string),
 	}
-	lm.scanAvailableLanguages()
+	if err := lm.scanAvailableLanguages(); err != nil {
+		fmt.Printf("Warning: failed to scan available languages: %v\n", err)
+	}
 	return lm
 }
 
 // scanAvailableLanguages scans the embedded filesystem for available language files
-func (lm *LanguageManager) scanAvailableLanguages() {
+func (lm *LanguageManager) scanAvailableLanguages() error {
 	entries, err := fs.ReadDir(embeddedLanguages, "data")
 	if err != nil {
-		return
+		return err
 	}
 
 	for _, entry := range entries {
@@ -46,10 +48,13 @@ func (lm *LanguageManager) scanAvailableLanguages() {
 			lm.availableLanguages = append(lm.availableLanguages, lang)
 		}
 	}
+	return nil
 }
 
 // LoadLanguage loads the specified language from embedded files and caches it
 func (lm *LanguageManager) LoadLanguage(langCode string) ([]string, error) {
+	langCode = strings.ToLower(langCode)
+
 	// Check if already loaded
 	if words, exists := lm.loadedLanguages[langCode]; exists {
 		return words, nil
@@ -78,13 +83,16 @@ func (lm *LanguageManager) LoadLanguage(langCode string) ([]string, error) {
 	return langData.Words, nil
 }
 
-// GetAvailableLanguages returns a list of all available language codes
+// GetAvailableLanguages returns a copy of all available language codes
 func (lm *LanguageManager) GetAvailableLanguages() []string {
-	return lm.availableLanguages
+	cpy := make([]string, len(lm.availableLanguages))
+	copy(cpy, lm.availableLanguages)
+	return cpy
 }
 
 // IsLanguageAvailable checks if a language is available in the manager
 func (lm *LanguageManager) IsLanguageAvailable(langCode string) bool {
+	langCode = strings.ToLower(langCode)
 	for _, lang := range lm.availableLanguages {
 		if lang == langCode {
 			return true

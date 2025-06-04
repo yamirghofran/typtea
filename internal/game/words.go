@@ -2,6 +2,7 @@ package game
 
 import (
 	"math/rand"
+	"sort"
 	"strings"
 	"time"
 )
@@ -12,9 +13,13 @@ var weights []int
 var cumulativeWeights []int
 var currentLanguageCode string
 
-// init initializes the language manager and sets the default language to en
+// init initializes the language manager and sets the default language to "en"
 func init() {
 	languageManager = NewLanguageManager()
+	err := SetLanguage("en")
+	if err != nil {
+		panic("failed to initialize default language: " + err.Error())
+	}
 }
 
 // SetLanguage sets the current language for the game and loads the corresponding words
@@ -50,7 +55,7 @@ func calculateWeights() {
 		weights[i] = len(currentLanguageWords) - i
 	}
 
-	// Calculate cumulative weights
+	// Calculate cumulative weights for binary search
 	cumulativeWeights = make([]int, len(weights))
 	cumSum := 0
 	for i, w := range weights {
@@ -65,25 +70,18 @@ func findWordIndex(r int) int {
 		return 0
 	}
 
-	left, right := 0, len(cumulativeWeights)-1
-
-	for left < right {
-		mid := (left + right) / 2
-		if cumulativeWeights[mid] < r {
-			left = mid + 1
-		} else {
-			right = mid
-		}
-	}
-
-	return left
+	return sort.Search(len(cumulativeWeights), func(i int) bool {
+		return cumulativeWeights[i] >= r
+	})
 }
 
 // GenerateWords generates a slice of words based on the current language and the specified count
 func GenerateWords(count int) []string {
 	if len(currentLanguageWords) == 0 {
 		// Fallback to English
-		SetLanguage("en")
+		if err := SetLanguage("en"); err != nil {
+			panic("failed to load fallback language: " + err.Error())
+		}
 	}
 
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -93,8 +91,8 @@ func GenerateWords(count int) []string {
 	if currentLanguageCode == "en" && len(cumulativeWeights) > 0 {
 		maxWeight := cumulativeWeights[len(cumulativeWeights)-1]
 
-		for i := 0; i < count; i++ {
-			r := rand.Intn(maxWeight) + 1
+		for i := range words {
+			r := rng.Intn(maxWeight) + 1 // random in range [1, maxWeight]
 			idx := findWordIndex(r)
 			words[i] = currentLanguageWords[idx]
 		}
@@ -102,7 +100,7 @@ func GenerateWords(count int) []string {
 	}
 
 	// For all other languages, use simple random selection
-	for i := 0; i < count; i++ {
+	for i := range words {
 		words[i] = currentLanguageWords[rng.Intn(len(currentLanguageWords))]
 	}
 

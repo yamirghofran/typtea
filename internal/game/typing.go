@@ -44,9 +44,13 @@ func NewTypingGame(duration int) *TypingGame {
 		LinesPerView: 3,
 		CharsPerLine: 50,
 	}
-
 	game.generateDisplayLines()
 	return game
+}
+
+// Reset reinitializes the game to a fresh state
+func (g *TypingGame) Reset() {
+	*g = *NewTypingGame(g.Duration)
 }
 
 // generateDisplayLines creates the initial display lines based on the words available
@@ -109,22 +113,23 @@ func (g *TypingGame) Start() {
 	}
 }
 
-// Reset resets the game state to allow for a new session
+// AddCharacter handles user input and updates game state
 func (g *TypingGame) AddCharacter(char rune) {
 	if !g.IsStarted {
 		g.Start()
 	}
 
 	if g.IsFinished || g.IsTimeUp() {
+		g.IsFinished = true
 		return
 	}
 
 	g.UserInput += string(char)
-	displayText := strings.Join(g.DisplayLines, " ")
+	displayText := []rune(strings.Join(g.DisplayLines, " "))
 
 	// Check if the character is within bounds
 	if g.CurrentPos < len(displayText) && g.CurrentPos >= 0 {
-		if rune(displayText[g.CurrentPos]) != char {
+		if displayText[g.CurrentPos] != char {
 			g.Errors[g.GlobalPos] = true
 			g.TotalErrorsMade++
 		}
@@ -132,9 +137,12 @@ func (g *TypingGame) AddCharacter(char rune) {
 		g.GlobalPos++
 
 		// Check if the first line is completed
-		if g.CurrentPos >= len(g.DisplayLines[0])+1 { // +1 for space
+		if g.CurrentPos >= len([]rune(g.DisplayLines[0])) {
 			g.shiftLines()
 		}
+	} else {
+		// End of available text
+		g.IsFinished = true
 	}
 }
 
@@ -161,6 +169,7 @@ func (g *TypingGame) RemoveCharacter() {
 		g.CurrentPos--
 		g.GlobalPos--
 
+		// Remove error mark if previously added
 		delete(g.Errors, g.GlobalPos)
 	}
 }
@@ -189,11 +198,8 @@ func (g *TypingGame) GetStats() TypingStats {
 	uncorrectedErrors := len(g.Errors)
 
 	// Calculate Net WPM (Gross WPM - uncorrected errors per minute)
-	netWPM := grossWPM
-	if minutes > 0 {
-		errorRate := float64(uncorrectedErrors) / minutes
-		netWPM = grossWPM - errorRate
-	}
+	errorRate := float64(uncorrectedErrors) / minutes
+	netWPM := grossWPM - errorRate
 
 	// Ensure Net WPM doesn't go below 0
 	if netWPM < 0 {
@@ -201,7 +207,7 @@ func (g *TypingGame) GetStats() TypingStats {
 	}
 
 	// Calculate accuracy (correct characters / total characters typed * 100)
-	correctChars := g.GlobalPos - g.TotalErrorsMade // You need to add this field
+	correctChars := g.GlobalPos - g.TotalErrorsMade
 	accuracy := 0.0
 	if g.GlobalPos > 0 {
 		accuracy = float64(correctChars) / float64(g.GlobalPos) * 100
@@ -217,7 +223,7 @@ func (g *TypingGame) GetStats() TypingStats {
 		Accuracy:          accuracy,
 		CharactersTyped:   g.GlobalPos,
 		CorrectChars:      correctChars,
-		TotalChars:        len(g.GetDisplayText()),
+		TotalChars:        len([]rune(g.GetDisplayText())),
 		TimeElapsed:       elapsed,
 		IsComplete:        g.IsFinished,
 		UncorrectedErrors: uncorrectedErrors,

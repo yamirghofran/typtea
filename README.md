@@ -13,7 +13,7 @@
 
 <br>
 <div align="center">
-<img src="assets/typtea.gif" />
+<img src="assets/example.gif" />
 </div>
 
 ---
@@ -130,6 +130,13 @@ go build
 2. Rebuild the application to embed the new language data
 
 ---
+
+## Community Extensions
+
+Looking for persistent stats or a database-backed version of typtea?
+
+Check out [PR #1: Database for storing stats](https://github.com/ashish0kumar/typtea/pull/1), which adds SQLite-based session tracking and best-score display.  
+This feature is not in the main branch to keep typtea minimal, but you can use it if you want to track your typing history.
 
 ## Contributing
 

@@ -52,6 +52,12 @@
 yay -S typtea
 ```
 
+### Nix
+
+```bash
+nix profile install nixpkgs#typtea
+```
+
 ### Via `go install`
 
 ```bash

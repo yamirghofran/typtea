@@ -52,6 +52,12 @@
 yay -S typtea
 ```
 
+### Void Linux
+
+```bash
+sudo xbps-install -S typtea
+```
+
 ### Nix
 
 ```bash

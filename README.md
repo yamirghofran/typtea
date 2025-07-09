@@ -1,13 +1,5 @@
 <h1 align="center">typtea</h1>
 
-<div align="center">
-<p>
-<a href="https://github.com/ashish0kumar/typtea/stargazers"><img src="https://img.shields.io/github/stars/ashish0kumar/typtea?style=for-the-badge&logo=starship&color=CBA6F7&logoColor=cdd6f4&labelColor=302D41" alt="stars"><a>&nbsp;&nbsp;
-<a href="https://github.com/ashish0kumar/typtea/releases"><img src="https://img.shields.io/github/v/release/ashish0kumar/typtea?style=for-the-badge&logo=github&color=CBA6F7&logoColor=cdd6f4&labelColor=302D41" alt="Releases"></a>&nbsp;&nbsp;
-<a href="https://github.com/ashish0kumar/typtea/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ashish0kumar/typtea?style=for-the-badge&logo=googledocs&color=CBA6F7&logoColor=cdd6f4&labelColor=302D41" alt="LICENSE"></a>&nbsp;&nbsp;
-</p>
-</div>
-
 <p align="center">Minimal terminal-based typing speed test with support for dozens of programming languages</p>
 
 <div align="center">
@@ -162,12 +154,16 @@ Contributions are always welcome! If you have ideas, bug reports, or want to sub
 - [**Lipgloss**](https://github.com/charmbracelet/lipgloss) - Styling and layout
 - [**Cobra**](https://github.com/spf13/cobra) - CLI framework
 
-## License
-
-[MIT License](LICENSE)
-
-<br><br>
+<br>
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/footers/gray0_ctp_on_line.svg?sanitize=true" />
 </p>
+
+<p align="center">
+        <i><code>&copy 2025-present <a href="https://github.com/ashish0kumar">Ashish Kumar</a></code></i>
+</p>
+
+<div align="center">
+<a href="https://github.com/ashish0kumar/typtea/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ashish0kumar/typtea?style=for-the-badge&color=CBA6F7&logoColor=cdd6f4&labelColor=302D41" alt="LICENSE"></a>&nbsp;&nbsp;
+</div>

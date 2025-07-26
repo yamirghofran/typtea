@@ -144,15 +144,21 @@ Looking for persistent stats or a database-backed version of typtea?
 Check out [PR #1: Database for storing stats](https://github.com/ashish0kumar/typtea/pull/1), which adds SQLite-based session tracking and best-score display.  
 This feature is not in the main branch to keep typtea minimal, but you can use it if you want to track your typing history.
 
-## Contributing
-
-Contributions are always welcome! If you have ideas, bug reports, or want to submit code, please feel free to open an issue or a pull request.
-
 ## Dependencies
 
 - [**Bubble Tea**](https://github.com/charmbracelet/bubbletea) - TUI framework
 - [**Lipgloss**](https://github.com/charmbracelet/lipgloss) - Styling and layout
 - [**Cobra**](https://github.com/spf13/cobra) - CLI framework
+
+## Contributing
+
+Contributions are always welcome! If you have ideas, bug reports, or want to submit code, please feel free to open an issue or a pull request.
+
+## Contributors
+
+<a href="https://github.com/ashish0kumar/typtea/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ashish0kumar/typtea" />
+</a>
 
 <br>
 

@@ -124,25 +124,28 @@ func (g *TypingGame) AddCharacter(char rune) {
 		return
 	}
 
-	g.UserInput += string(char)
-	displayText := []rune(strings.Join(g.DisplayLines, " "))
+	lineText := []rune(g.DisplayLines[0])
 
-	// Check if the character is within bounds
-	if g.CurrentPos < len(displayText) && g.CurrentPos >= 0 {
-		if displayText[g.CurrentPos] != char {
+	// If at end of line, only shift if user just typed space
+	if g.CurrentPos == len(lineText) {
+		if char == ' ' {
+			g.UserInput += string(char)
+			g.CurrentPos++
+			g.GlobalPos++
+			g.shiftLines()
+		}
+		return
+	}
+
+	// Normal character processing
+	if g.CurrentPos < len(lineText) && g.CurrentPos >= 0 {
+		g.UserInput += string(char)
+		if lineText[g.CurrentPos] != char {
 			g.Errors[g.GlobalPos] = true
 			g.TotalErrorsMade++
 		}
 		g.CurrentPos++
 		g.GlobalPos++
-
-		// Check if the first line is completed
-		if g.CurrentPos >= len([]rune(g.DisplayLines[0])) {
-			g.shiftLines()
-		}
-	} else {
-		// End of available text
-		g.IsFinished = true
 	}
 }
 

@@ -75,27 +75,30 @@ func (m Model) formatIntoLines(plainContent string) []string {
 			break
 		}
 
-		if charIndex >= len(plainContent) {
-			// If we run out of content, just render untyped
-			styledLines = append(styledLines, mutedStyle.Render(line))
-			continue
-		}
-
 		var styledLine strings.Builder
 
-		for _, char := range line {
+		lineRunes := []rune(line)
+
+		for col := 0; col < len(lineRunes); col++ {
 			if charIndex < len(plainContent) {
-				// Style character using helper
-				styledChar := m.styleChar(char, charIndex)
+				styledChar := m.styleChar(lineRunes[col], charIndex)
 				styledLine.WriteString(styledChar)
 				charIndex++
 			} else {
-				styledLine.WriteString(mutedStyle.Render(string(char)))
+				styledLine.WriteString(mutedStyle.Render(string(lineRunes[col])))
 			}
+		}
+
+		// Check if caret is on this line and positioned just beyond last char
+		caretPos := m.game.CurrentPos
+		if i == 0 && caretPos == len(lineRunes) {
+			// Append caret style with a space or block to show cursor
+			styledLine.WriteString(cursorStyle.Render(" "))
 		}
 
 		styledLines = append(styledLines, styledLine.String())
 
+		// Advance charIndex as before for spacing between lines
 		if charIndex < len(plainContent) && i < len(lines)-1 {
 			charIndex++
 		}

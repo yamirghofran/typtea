@@ -79,11 +79,13 @@ func (g *TypingGame) generateDisplayLines() {
 				wordIndex++
 			} else {
 				// Word doesn't fit, break to next line
+				// Remove any trailing spaces
+				lineStr := strings.TrimRight(currentLine.String(), " ")
+				currentLine.Reset()
+				currentLine.WriteString(lineStr)
 				break
 			}
-		}
-
-		// Add the completed line
+		} // Add the completed line
 		if currentLine.Len() > 0 {
 			lines = append(lines, currentLine.String())
 		} else {
@@ -179,7 +181,7 @@ func (g *TypingGame) RemoveCharacter() {
 
 // GetDisplayText returns the current text to be displayed in the game
 func (g *TypingGame) GetDisplayText() string {
-	return strings.Join(g.DisplayLines, " ")
+	return strings.Join(g.DisplayLines, "")
 }
 
 // GetStats calculates and returns the typing statistics for the current game session

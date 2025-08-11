@@ -98,10 +98,8 @@ func (m Model) formatIntoLines(plainContent string) []string {
 
 		styledLines = append(styledLines, styledLine.String())
 
-		// Advance charIndex as before for spacing between lines
-		if charIndex < len(plainContent) && i < len(lines)-1 {
-			charIndex++
-		}
+		// No extra space between lines
+		// charIndex++ // This was adding an extra space
 	}
 
 	return styledLines
